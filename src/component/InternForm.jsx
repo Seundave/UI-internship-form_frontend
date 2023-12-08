@@ -330,7 +330,7 @@ const InternForm = () => {
                     slotProps={{
                       textField: {
                         ...register("yearofbirth"),
-                        placeholder: "Select date",
+                        placeholder: "Date of birth",
                       },
                     }}
                     // format="DD/MM/YYYY"
