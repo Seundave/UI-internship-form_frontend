@@ -322,6 +322,19 @@ const InternForm = () => {
                   {errors.gender?.message}
                 </Typography>
               </Grid>
+              <Grid item xs={12} sm={12} sx={{ marginTop: "20px" }}>
+                {/* <label>Middle name</label> */}
+                <TextField
+                  name="email"
+                  placeholder="Email address"
+                  sx={{ marginTop: "10px" }}
+                  {...register("email")}
+                  fullWidth
+                />
+                <Typography sx={{ color: "red" }}>
+                  {errors.email?.message}
+                </Typography>
+              </Grid>
 
               <Grid item xs={12} sm={12}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
