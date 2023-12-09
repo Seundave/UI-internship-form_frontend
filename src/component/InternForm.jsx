@@ -60,7 +60,6 @@ function getStyles(name, specialty, theme) {
   };
 }
 
-
 const InternForm = () => {
   const [radioOption, setRadioOption] = useState("");
   const theme = useTheme();
@@ -136,21 +135,52 @@ const InternForm = () => {
   const interest = watch("interest", []);
   const yearofbirth = watch("yearofbirth");
 
-
+  // console.log(data)
 
   const handleImageChange = (event) => {
     setValue("photo", event.target.files[0]);
   };
 
+  // const {
+  //   photo,
+  //   surname,
+  //   firstname,
+  //   middlename,
+  //   gender,
+  //   yearofbirth,
+  //   stateoforigin,
+  //   contactaddress,
+  //   interest,
+  //   institution,
+  //   course,
+  //   year,
+  //   organization,
+  //   duration,
+  //   level,
+  //   firstinternship,
+  //   reasonitems,
+  //   expectations,
+  //   explanations,
+  //   skills,
+  // } = req.body;
+  // console.log(data);
+  // e.preventDefault();
+
   const onSubmit = async (data) => {
-    console.log(data);
+    // console.log(data)
+    try {
+      const res = await axios.post("http://localhost:5000/register", data);
+      // console.log(req.body)
+      const formData = await res.json();
+      console.log(formData);
+    } catch (error) {
+      console.log("Error submitting internship form", error);
+    }
   };
   const handleRadioChange = (e) => {
     setRadioOption(e.target.value);
-    setValue("firstinternship", e.target.value)
+    setValue("firstinternship", e.target.value);
   };
-
-
 
   return (
     <>
@@ -436,12 +466,9 @@ const InternForm = () => {
                 </Typography>
 
                 <FormControl>
-                 
                   <RadioGroup
                     aria-labelledby="demo-controlled-radio-buttons-group"
                     name="controlled-radio-buttons-group"
-                 
-                    
                     value={radioOption}
                     onChange={handleRadioChange}
                   >
