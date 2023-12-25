@@ -1,0 +1,226 @@
+.dashboard{ 
+    display: flex;
+    min-height: 100vh;
+    height: 100%;
+    background-color: #DDE8F0;
+    padding-right: 20px;
+}
+
+.home-container{
+    width: 80%;
+    /* margin-right: 30px; */
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.home-container > h1{
+    /* font-size: larger; */
+    text-align: center;
+    font-size: 30px;
+}
+.home-container h2, .home-container h3{
+    margin-bottom: 10px;
+    color: black;
+    font-size: large;
+}
+.home-container > .statistics, .home-container > .post{
+    padding: 30px 10px;
+    /* margin-left: 30px; */
+    margin-top: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+.home-container > .post{
+    margin-top: 30px;
+}
+
+.home-container > .post{
+    padding: 20px 10px;
+}
+.home-container > .statistics > .top{
+       display: flex;
+       justify-content: space-between;
+       border: 0;
+}
+.home-container > .post > .loading{
+    display: flex;
+    justify-content: center;
+}
+.home-container > .statistics > .stat{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.home-container > .statistics > .stat.loading{
+    justify-content: center;
+}
+
+.home-container > .statistics > .stat > div{
+    width: calc(100%/3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.home-container > .statistics > .stat > div > div{
+    margin-left: 20px;
+    text-align: center;
+}
+table{
+    width: 100%;
+    border-collapse: collapse;
+}
+td, th {
+    text-align: center;
+    border: 1px solid black;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+
+thead > tr > th{
+    height: 50px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: #004581;
+    color: white;
+}
+tbody > tr:nth-child(odd) {
+    height: 50px;
+}
+tbody > tr:hover {
+    height: 50px;
+    background-color: #ddd;
+}
+tbody > tr:nth-child(even) {
+    height: 50px;
+    background-color: #f2f2f2;
+}
+.table-container{
+    overflow-x: auto;
+}
+.dropbtn {
+  background-color: #004581;
+  width: 100%;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  text-transform: capitalize;
+}
+.dropbtn:hover, .dropbtn:focus {
+  background-color: #2980B9;
+}
+.dashboard .dropdown {
+    position: relative;
+}
+
+.dashboard .dropdown-content {
+  position: absolute;
+}
+.dropdown {
+    width: 150px;
+}
+
+.dropdown-content {
+  background-color: #f1f1f1;
+  width: 100%;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+.dropdown-content p {
+  color: black;
+  padding: 12px 16px;
+  text-transform: capitalize
+}
+.dropdown-content p:hover {
+    background-color: #ddd;
+}
+@media screen and (max-width:1000px) {
+    /* .home-container > .statistics, .home-container > .post { */
+        /* padding: 20px; */
+        /* margin-left: 20px; */
+    /* } */
+    .home-container > .statistics > .stat > div > div {
+        margin-left: 0px;
+    }
+    .home-container > h1 {
+        font-size: medium;
+    }
+    .home-container > .statistics > .stat > div{
+        width: 250px;
+        flex-direction: column;
+    }
+    .home-container > .statistics > .stat > div > div{
+        display: flex;
+        margin-top: 10px;
+    }
+    .home-container > .statistics > .stat > div > div p{
+        width: max-content;
+    }
+    .home-container > .statistics > .stat > div > div > p:first-child{
+        margin-right: 5px;
+    }
+    .home-container > .statistics > .stat > div > svg {
+        width: 75px;
+    }
+}
+@media screen and (max-width:900px) {
+    .home-container > .statistics > .stat{
+       justify-content: center;
+    }
+    .home-container > .statistics > .stat > div{
+        width: calc(90%/3);
+    }
+    .home-container {
+        width: 70%;
+    }
+    .table-container{
+        padding: 0 10px;
+    }
+    .home-container table tr > th:nth-of-type(1), .home-container table tr > th:nth-of-type(5),
+    .home-container table tr > td:nth-of-type(1), .home-container table tr > td:nth-of-type(5){
+        display: none;
+    }
+}
+@media screen and (max-width:500px) {
+    .home-container > .statistics > .stat > div{
+        flex-direction:row;
+    }
+    .home-container {
+        width: 100%;
+    }
+    .home-container > .statistics > .stat {
+        justify-content: center;
+        justify-content: flex-start;
+        flex-direction: column;
+        align-items: center;
+    }
+    .home-container > .statistics > .stat > div > div {
+        display: flex;
+    }
+    .home-container > .statistics > .stat > div {
+        flex-direction: column;
+    }
+    .home-container table tr > th:nth-of-type(1), .home-container table tr > th:nth-of-type(5),.home-container table tr > th:nth-of-type(3),
+    .home-container table tr > td:nth-of-type(1), .home-container table tr > td:nth-of-type(5),.home-container table tr > td:nth-of-type(3){
+        display: none;
+    }
+}
+@media screen and (max-width:400px) {
+    .home-container > .post{
+        display: none;
+    }
+    .home-container > .statistics > .top {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+    .home-container h2{
+        padding-left: 0px;
+    }
+}

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Paper,
   Stack,
@@ -18,6 +18,8 @@ import {
   Chip,
   IconButton,
 } from "@mui/material";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import universityLogo from "../assets/university.png";
 import { useTheme } from "@mui/material/styles";
 import { Controller, useForm } from "react-hook-form";
@@ -29,6 +31,7 @@ import { formSchema } from "../validation/formSchema";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import axios from "axios";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -62,6 +65,7 @@ function getStyles(name, specialty, theme) {
 
 const InternForm = () => {
   const [radioOption, setRadioOption] = useState("");
+  const [gender, setGender] = useState("");
   const theme = useTheme();
   const [specialty, setSpecialty] = React.useState([]);
 
@@ -90,20 +94,20 @@ const InternForm = () => {
 
   const handleImageClick = () => {
     inputRef.current.click();
-    console.log("clicked");
-    console.log(inputRef);
   };
 
   const methods = useForm({
     defaultValues: {
-      photo: "",
+      // photo: "",
       surname: "",
-      firstname: "",
-      middlename: "",
-      gender: "",
-      yearofbirth: dayjs(Date.now()),
+      firstName: "",
+      middleName: "",
+      gender: "placeholder",
+      // dateofbirth: dayjs(Date.now()),
+      dateofbirth: undefined,
+      email: "",
       stateoforigin: "",
-      contactaddress: "",
+      address: "",
       interest: [],
       institution: "",
       course: "",
@@ -111,10 +115,10 @@ const InternForm = () => {
       organization: "",
       duration: "",
       level: "",
-      firstinternship: "",
+      firstInternship: "",
       reasonitems: "",
       expectations: "",
-      explanations: "",
+      explainInterest: "",
       skills: "",
     },
     resolver: yupResolver(formSchema),
@@ -127,8 +131,13 @@ const InternForm = () => {
     handleSubmit,
     watch,
     setValue,
+    control,
     formState: { errors },
   } = methods;
+
+  useEffect(() => {
+    register("firstInternship");
+  }, [register]);
 
   const firstintern = watch("firstinternship", "");
   const photo = watch("photo", "");
@@ -141,46 +150,60 @@ const InternForm = () => {
     setValue("photo", event.target.files[0]);
   };
 
-  // const {
-  //   photo,
-  //   surname,
-  //   firstname,
-  //   middlename,
-  //   gender,
-  //   yearofbirth,
-  //   stateoforigin,
-  //   contactaddress,
-  //   interest,
-  //   institution,
-  //   course,
-  //   year,
-  //   organization,
-  //   duration,
-  //   level,
-  //   firstinternship,
-  //   reasonitems,
-  //   expectations,
-  //   explanations,
-  //   skills,
-  // } = req.body;
-  // console.log(data);
-  // e.preventDefault();
-
   const onSubmit = async (data) => {
-    // console.log(data)
     try {
-      const res = await axios.post("http://localhost:5000/register", data);
-      // console.log(req.body)
-      const formData = await res.json();
-      console.log(formData);
+      let formattedData = {
+        surname: data.surname,
+        firstName: data.firstName,
+        middleName: data.middleName,
+        gender: data.gender,
+        dateofbirth: data.dateofbirth,
+        email: data.email,
+        stateoforigin: data.stateoforigin,
+        address: data.address,
+        interest: data.interest,
+        institution: data.institution,
+        course: data.course,
+        level: data.level,
+        firstInternship: data.firstInternship,
+        internshipDetails: {
+          year: data.year || "",
+          duration: data.duration || "",
+          organization: data.organization || "",
+        },
+        reasonitems: data.reasonitems,
+        expectations: data.expectations,
+        explainInterest: data.explainInterest,
+        skills: data.skills,
+      };
+      const res = await axios.post(
+        "http://localhost:5000/register",
+        formattedData
+      );
+      console.log(res);
+      toast.success("Form submitted successfully!");
+      window.location.reload();
+      if (res) {
+        reset();
+        window.location.reload();
+        setValue("gender", "placeholder");
+        setRadioOption("");
+      }
     } catch (error) {
       console.log("Error submitting internship form", error);
+      toast.error("Form submission failed. Please try again.");
     }
   };
   const handleRadioChange = (e) => {
-    setRadioOption(e.target.value);
-    setValue("firstinternship", e.target.value);
+    const radioValue = e.target.value;
+    setRadioOption(radioValue);
+    setValue("firstInternship", radioValue);
   };
+
+  // const handleSelectGender = (e) => {
+  //   setGender(e.target.value);
+  //   setValue("gender", e.target.value);
+  // };
 
   return (
     <>
@@ -223,7 +246,7 @@ const InternForm = () => {
         <Box sx={{ width: "100%" }}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container>
-              <Grid item xs={12} sm={12}>
+              {/* <Grid item xs={12} sm={12}>
                 <Stack
                   spacing={{ xs: 1, sm: 0 }}
                   direction="row"
@@ -296,11 +319,10 @@ const InternForm = () => {
                   </Stack>
                 </Stack>
                 <Typography color="red">{errors.photo?.message}</Typography>
-              </Grid>
+              </Grid> */}
               <Grid item xs={12} sm={12} sx={{ marginTop: "20px" }}>
                 {/* <label>Surname</label> */}
                 <TextField
-                  name="surname"
                   placeholder="Surname"
                   sx={{ marginTop: "10px" }}
                   {...register("surname")}
@@ -313,34 +335,33 @@ const InternForm = () => {
               <Grid item xs={12} sm={12} sx={{ marginTop: "20px" }}>
                 {/* <label>First name</label> */}
                 <TextField
-                  name="firstname"
                   placeholder="First name"
                   sx={{ marginTop: "10px" }}
-                  {...register("firstname")}
+                  {...register("firstName")}
                   fullWidth
                 />
                 <Typography sx={{ color: "red" }}>
-                  {errors.firstname?.message}
+                  {errors.firstName?.message}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={12} sx={{ marginTop: "20px" }}>
                 {/* <label>Middle name</label> */}
                 <TextField
-                  name="middlename"
                   placeholder="Middle name"
                   sx={{ marginTop: "10px" }}
-                  {...register("middlename")}
+                  {...register("middleName")}
                   fullWidth
                 />
                 <Typography sx={{ color: "red" }}>
-                  {errors.middlename?.message}
+                  {errors.middleName?.message}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={12} sx={{ marginTop: "20px" }}>
                 <Select
                   defaultValue="placeholder"
-                  sx={{ color: "#CDCDCD" }}
-                  name="gender"
+                  // sx={{ color: "#CDCDCD" }}
+
+                  // onChange={handleSelectGender}
                   {...register("gender")}
                   fullWidth
                 >
@@ -355,7 +376,6 @@ const InternForm = () => {
               <Grid item xs={12} sm={12} sx={{ marginTop: "20px" }}>
                 {/* <label>Middle name</label> */}
                 <TextField
-                  name="email"
                   placeholder="Email address"
                   sx={{ marginTop: "10px" }}
                   {...register("email")}
@@ -367,28 +387,49 @@ const InternForm = () => {
               </Grid>
 
               <Grid item xs={12} sm={12}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <Controller
+                  name="dateofbirth"
+                  control={control} // Pass the control object from useForm()
+                  render={({ field }) => (
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        {...field}
+                        sx={{ width: "100%", marginTop: "20px" }}
+                        slotProps={{
+                          textField: {
+                            placeholder: "Date of birth",
+                          },
+                        }}
+                        format="DD/MM/YYYY"
+                        fullWidth
+                      />
+                    </LocalizationProvider>
+                  )}
+                />
+                <Typography sx={{ color: "red" }}>
+                  {errors.dateofbirth?.message}
+                </Typography>
+                {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     sx={{ width: "100%", marginTop: "20px" }}
                     slotProps={{
                       textField: {
-                        ...register("yearofbirth"),
+                        ...register("dateofbirth"),
                         placeholder: "Date of birth",
                       },
                     }}
-                    // format="DD/MM/YYYY"
+                    format="DD/MM/YYYY"
                     fullWidth
                   />
                 </LocalizationProvider>
                 <Typography sx={{ color: "red" }}>
-                  {errors.yearofbirth?.message}
-                </Typography>
+                  {errors.dateofbirth?.message}
+                </Typography> */}
               </Grid>
 
               <Grid item xs={12} sm={12} sx={{ marginTop: "20px" }}>
                 {/* <label>State of Origin</label> */}
                 <TextField
-                  name="stateoforigin"
                   placeholder="State of Origin"
                   sx={{ marginTop: "10px" }}
                   {...register("stateoforigin")}
@@ -402,21 +443,19 @@ const InternForm = () => {
               <Grid item xs={12} sm={12} sx={{ marginTop: "20px" }}>
                 {/* <label>Contact Address</label> */}
                 <TextField
-                  name="contactaddress"
                   placeholder="Contact Address"
                   sx={{ marginTop: "10px" }}
-                  {...register("contactaddress")}
+                  {...register("address")}
                   fullWidth
                 />
                 <Typography sx={{ color: "red" }}>
-                  {errors.contactaddress?.message}
+                  {errors.address?.message}
                 </Typography>
               </Grid>
 
               <Grid item xs={12} sm={12} sx={{ marginTop: "20px" }}>
                 {/* <label>Institution</label> */}
                 <TextField
-                  name="institution"
                   placeholder="Institution"
                   sx={{ marginTop: "10px" }}
                   {...register("institution")}
@@ -430,7 +469,6 @@ const InternForm = () => {
               <Grid item xs={12} sm={12} sx={{ marginTop: "20px" }}>
                 {/* <label>Course</label> */}
                 <TextField
-                  name="course"
                   placeholder="Course"
                   sx={{ marginTop: "10px" }}
                   {...register("course")}
@@ -446,7 +484,6 @@ const InternForm = () => {
                 <Select
                   defaultValue="placeholder"
                   sx={{ color: "#CDCDCD" }}
-                  name="level"
                   {...register("level")}
                   fullWidth
                 >
@@ -486,7 +523,7 @@ const InternForm = () => {
                 </FormControl>
 
                 <Typography sx={{ color: "red" }}>
-                  {errors.firstinternship?.message}
+                  {errors.firstInternship?.message}
                 </Typography>
               </Grid>
 
@@ -494,7 +531,6 @@ const InternForm = () => {
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={4}>
                     <TextField
-                      name="year"
                       placeholder="Year"
                       {...register("year")}
                       // sx={{ marginTop: "10px" }}
@@ -506,20 +542,18 @@ const InternForm = () => {
                   </Typography>
                   <Grid item xs={12} sm={4}>
                     <TextField
-                      name="organization"
                       placeholder="Company/Organization"
                       // sx={{ marginTop: "10px" }}
                       {...register("organization")}
                       fullWidth
                     />
                     <Typography sx={{ color: "red" }}>
-                      {errors.organization?.message}
+                      {errors.company?.message}
                     </Typography>
                   </Grid>
 
                   <Grid item xs={12} sm={4}>
                     <Select
-                      name="duration"
                       defaultValue="placeholder"
                       sx={{ color: "#CDCDCD" }}
                       {...register("duration")}
@@ -544,7 +578,6 @@ const InternForm = () => {
               <Grid item xs={12} sm={12}>
                 <TextField
                   placeholder="What is your reason for choosing ITeMS?"
-                  name="reasonitems"
                   multiline
                   rows={6}
                   sx={{ marginTop: "30px" }}
@@ -559,7 +592,6 @@ const InternForm = () => {
               <Grid item xs={12} sm={12}>
                 <TextField
                   placeholder="What are your expectations or goals for this internship?"
-                  name="expectations"
                   multiline
                   rows={6}
                   sx={{ marginTop: "30px" }}
@@ -621,22 +653,20 @@ const InternForm = () => {
               <Grid item xs={12} sm={12}>
                 <TextField
                   placeholder="Provide brief explanation why you selected the three area above"
-                  name="explanations"
                   multiline
                   rows={6}
                   sx={{ marginTop: "30px" }}
-                  {...register("explanations")}
+                  {...register("explainInterest")}
                   fullWidth
                 />
                 <Typography sx={{ color: "red" }}>
-                  {errors.explanations?.message}
+                  {errors.explainInterest?.message}
                 </Typography>
               </Grid>
 
               <Grid item xs={12} sm={12}>
                 <TextField
                   placeholder="What special skills do you have?"
-                  name="skills"
                   multiline
                   rows={6}
                   sx={{ marginTop: "30px" }}
