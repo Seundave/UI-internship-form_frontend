@@ -21,6 +21,7 @@ import {
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import universityLogo from "../assets/university.png";
+import { useDispatch } from "react-redux";
 import { useTheme } from "@mui/material/styles";
 import { Controller, useForm } from "react-hook-form";
 import { CloudArrowUp } from "@phosphor-icons/react";
@@ -67,6 +68,7 @@ const InternForm = () => {
   const [radioOption, setRadioOption] = useState("");
   const [gender, setGender] = useState("");
   const theme = useTheme();
+  const dispatch = useDispatch()
   const [specialty, setSpecialty] = React.useState([]);
 
   const [image, setImage] = useState();
@@ -190,8 +192,8 @@ const InternForm = () => {
         setRadioOption("");
       }
     } catch (error) {
+      toast.error(error.response.data.message)
       console.log("Error submitting internship form", error);
-      toast.error("Form submission failed. Please try again.");
     }
   };
   const handleRadioChange = (e) => {
@@ -603,7 +605,7 @@ const InternForm = () => {
                 </Typography>
               </Grid>
 
-              <Grid items xs={12} sm={12}>
+              <Grid item xs={12} sm={12}>
                 <FormControl sx={{ marginTop: "20px" }} fullWidth>
                   <InputLabel id="demo-multiple-name-label">
                     Special Interest

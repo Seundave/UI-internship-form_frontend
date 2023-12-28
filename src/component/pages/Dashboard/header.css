@@ -203,4 +203,7 @@ header > .brand {
     header.active > .brand {
         display: block;
     }
+    .top{
+        display:flex;
+    }
 }

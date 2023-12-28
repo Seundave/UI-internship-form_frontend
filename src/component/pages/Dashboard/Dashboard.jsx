@@ -3,12 +3,17 @@ import Nav from "./Nav.jsx";
 import "./dashboard.css";
 import Table from "./Table.jsx";
 import { Navigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
+import { internFailure, internStart, internSuccess } from "../../../redux/interns/interns.js";
+import axios from "axios"
 // import axios from "axios"
 
 function Dashboard() {
-  // const { currentUser } = useSelector((state) => state.user);
-  const {allInterns} = useSelector((state)=>state.interns)
+  const { currentUser } = useSelector((state) => state.user);
+  const { allInterns } = useSelector((state) => state.interns);
+  const dispatch = useDispatch()
+
+  console.log(allInterns)
   // const [isloading, setIsLoading] = useState(false)
   // const [fetchedData, setFetchedData] = useState([])
 
@@ -35,9 +40,30 @@ function Dashboard() {
   //   fetchData();
   // }, []);
 
-  // if (!currentUser) {
-  //   return <Navigate to="/login" />;
-  // }
+  useEffect(() => {
+    const fetchInterns = async () => {
+      dispatch(internStart())
+      try {
+        const response = await axios.get("http://localhost:5000/user");
+        console.log(response);
+        const fetchedInterns = response.data;
+        dispatch(internSuccess(response.data.data))
+        // setData(fetchedInterns);
+        // setLoading(false);
+      } catch (error) {
+        console.log("Error fetching admins", error);
+dispatch(internFailure(error))
+
+        // setLoading(false);
+      }
+    };
+
+    fetchInterns();
+  }, []);
+
+  if (!currentUser) {
+    return <Navigate to="/login" />;
+  }
   return (
     <div>
       <Nav />
@@ -46,10 +72,7 @@ function Dashboard() {
           <div className="header"></div>
           <h1>List of Interns</h1>
 
-          {allInterns ? 
-            <Table /> : <p>No application yet</p>
-          }
-          
+          {allInterns.length >= 1 && <Table />}
 
           {/* <div className="table-container">
             <table>
