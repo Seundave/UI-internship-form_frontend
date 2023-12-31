@@ -10,7 +10,11 @@ import { useMemo } from "react";
 import axios from "axios";
 import { PageviewRounded } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { internFailure, internStart, internSuccess } from "../../../redux/interns/interns";
+import {
+  internFailure,
+  internStart,
+  internSuccess,
+} from "../../../redux/interns/interns";
 
 const csvConfig = mkConfig({
   fieldSeparator: ",",
@@ -20,9 +24,9 @@ const csvConfig = mkConfig({
 
 const Table = () => {
   const [data, setData] = useState([]);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   // const [loading, setLoading] = useState(false);
-  const {loading, allInterns} = useSelector((state)=>state.interns)
+  const { loading, allInterns } = useSelector((state) => state.interns);
   const handleExportRows = (rows) => {
     const rowData = rows.map((row) => row.original);
     const csv = generateCsv(csvConfig)(rowData);
@@ -33,26 +37,26 @@ const Table = () => {
     download(csvConfig)(csv);
   };
 
-//   useEffect(() => {
-//     const fetchInterns = async () => {
-//       dispatch(internStart())
-//       try {
-//         const response = await axios.get("http://localhost:5000/user");
-//         console.log(response);
-//         const fetchedInterns = response.data;
-//         dispatch(internSuccess(response.data))
-//         setData(fetchedInterns);
-//         // setLoading(false);
-//       } catch (error) {
-//         console.log("Error fetching admins", error);
-// dispatch(internFailure(error))
+  //   useEffect(() => {
+  //     const fetchInterns = async () => {
+  //       dispatch(internStart())
+  //       try {
+  //         const response = await axios.get("http://localhost:5000/user");
+  //         console.log(response);
+  //         const fetchedInterns = response.data;
+  //         dispatch(internSuccess(response.data))
+  //         setData(fetchedInterns);
+  //         // setLoading(false);
+  //       } catch (error) {
+  //         console.log("Error fetching admins", error);
+  // dispatch(internFailure(error))
 
-//         // setLoading(false);
-//       }
-//     };
+  //         // setLoading(false);
+  //       }
+  //     };
 
-//     fetchInterns();
-//   }, []);
+  //     fetchInterns();
+  //   }, []);
 
   //this func will show the details of the intern clicked on
   const handleViewIntern = (intern) => {
@@ -98,8 +102,10 @@ const Table = () => {
 
   const table = useMaterialReactTable({
     columns,
-    data:allInterns,
+    data: allInterns,
     enableRowSelection: true,
+    enableRowActions: true,
+    positionActionsColumn: "last",
     columnFilterDisplayMode: "popover",
     paginationDisplayMode: "pages",
     positionToolbarAlertBanner: "bottom",
@@ -160,10 +166,9 @@ const Table = () => {
   });
 
   // if(loading){
-  //   return <p>Loading...</p> 
+  //   return <p>Loading...</p>
   // }
 
-  
   return <MaterialReactTable table={table} />;
 };
 
