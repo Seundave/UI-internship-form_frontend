@@ -15,6 +15,7 @@ import {
   internStart,
   internSuccess,
 } from "../../../redux/interns/interns";
+import ShowInternDetails from "./ShowInternDetails";
 
 const csvConfig = mkConfig({
   fieldSeparator: ",",
@@ -24,9 +25,12 @@ const csvConfig = mkConfig({
 
 const Table = () => {
   const [data, setData] = useState([]);
+  const [showDetails, setShowDetails] = useState(false);
+  const [activeIntern, setActiveIntern] = useState(null);
   const dispatch = useDispatch();
   // const [loading, setLoading] = useState(false);
   const { loading, allInterns } = useSelector((state) => state.interns);
+  
   const handleExportRows = (rows) => {
     const rowData = rows.map((row) => row.original);
     const csv = generateCsv(csvConfig)(rowData);
@@ -36,6 +40,8 @@ const Table = () => {
     const csv = generateCsv(csvConfig)(dummyData);
     download(csvConfig)(csv);
   };
+
+  console.log(showDetails);
 
   //   useEffect(() => {
   //     const fetchInterns = async () => {
@@ -60,6 +66,8 @@ const Table = () => {
 
   //this func will show the details of the intern clicked on
   const handleViewIntern = (intern) => {
+    setActiveIntern(intern);
+    setShowDetails(true);
     console.log(intern);
   };
 
@@ -93,6 +101,7 @@ const Table = () => {
       {
         accessorKey: "interest",
         header: "Interest",
+        Cell: ({ cell }) => cell.getValue().join(", "),
         size: 50,
       },
     ],
@@ -169,7 +178,19 @@ const Table = () => {
   //   return <p>Loading...</p>
   // }
 
-  return <MaterialReactTable table={table} />;
+  return (
+    <>
+      {showDetails && (
+        <ShowInternDetails
+          showDetails={showDetails}
+          handleClose={() => setShowDetails(false)}
+          handleViewIntern={handleViewIntern}
+          activeIntern={activeIntern}
+        />
+      )}
+      <MaterialReactTable table={table} />;
+    </>
+  );
 };
 
 export default Table;

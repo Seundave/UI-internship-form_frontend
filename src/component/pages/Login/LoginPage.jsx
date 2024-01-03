@@ -128,6 +128,7 @@ function LoginPage() {
             sx={{
               marginTop: "20px",
               marginBottom: "20px",
+              height:"50px"
             }}
             fullWidth
           >
